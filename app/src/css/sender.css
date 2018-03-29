@@ -1,0 +1,23 @@
+#sender {
+  min-width: 466px;
+  width: 50%;
+}
+#message {
+  margin-bottom: 20px;
+}
+#email {
+  display: inline-block;
+  width: 300px;
+  margin-right: 30px;
+}
+form button.btn {
+  /* vertical-align: top; */
+}
+form p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+textarea {
+  resize: none;
+}
