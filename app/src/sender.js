@@ -1,6 +1,7 @@
 import React from 'react';
-import './css/sender.css';
 import { Input, Button } from 'antd';
+
+import './css/sender.css';
 
 const  { TextArea } = Input;
 
