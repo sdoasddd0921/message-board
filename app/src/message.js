@@ -80,6 +80,8 @@ class Test extends React.Component {
       </div>
     ));
     const rows = replyIn.length > 0 ? replyIn.length : 1;
+    // https://s.gravatar.com/avatar/90d88b8fe862194845c1cb01dc1ebb60?s=80
+    // gravatar avatar
     return (
       <div className="box">
         <div className="box-title">
