@@ -1,21 +1,27 @@
 import React from 'react';
-import './css/sender.css'
+import './css/sender.css';
+import { Input, Button } from 'antd';
+
+const  { TextArea } = Input;
 
 class Sender extends React.Component {
   submit(e) {
     e.preventDefault();
-    console.log('sub')
+    if (typeof this.props.onSubmit === 'function') {
+      this.props.onSubmit();
+    }
   }
 
   render() {
+    const { type='留言' } = this.props;
     return (
       <div id="sender" className="container">
-        <form onSubmit={this.submit}>
-          <textarea name="message" id="message" className="form-control" cols="30" rows="5"></textarea>
+        <form onSubmit={this.submit.bind(this)}>
+          <TextArea autosize={false} name="message" id="message" className="form-control" cols="30" rows="5"></TextArea>
           <p>
             <label htmlFor="email">邮箱：</label>
-            <input type="email" id="email" className="form-control" placeholder="name@example.com"/>
-            <button type="submit" className="btn btn-primary">留言</button>
+            <Input type="email" id="email" className="form-control" placeholder="name@example.com"/>
+            <Button htmlType="submit" type="primary" >{type}</Button>
           </p>
         </form>
       </div>

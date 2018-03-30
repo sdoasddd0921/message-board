@@ -1,5 +1,22 @@
+@import '~antd/dist/antd.css';
 body {
   margin: 0;
   padding: 0;
+  padding-left: calc(100vw - 100%);
   font-family: sans-serif;
+}
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.pagination {
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  border-radius: .25rem;
+}
+.ant-pagination {
+  margin: 0 auto;
 }

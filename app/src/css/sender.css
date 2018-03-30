@@ -1,6 +1,6 @@
 #sender {
   min-width: 466px;
-  width: 50%;
+  width: 560px;
 }
 #message {
   margin-bottom: 20px;
@@ -20,4 +20,7 @@ form p {
 }
 textarea {
   resize: none;
+}
+label {
+  margin-bottom: 0;
 }

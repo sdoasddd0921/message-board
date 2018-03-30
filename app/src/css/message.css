@@ -1,9 +1,55 @@
 #messages {
   min-width: 466px;
-  width: 50%;
+  width: 680px;
   margin-bottom: 50px;
 }
 
 .box {
   background: #eee;
+  margin-bottom: 60px;
+  border-bottom-color: #ccc;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+.box p {
+  margin-bottom: 0;
+  line-height: 32px;
+}
+
+.avatar {
+  float: left;
+  width: 64px;
+  height: 64px;
+  margin-right: 10px;
+  background: pink;
+}
+.box-title::after, .box-message::after{
+  content: "";
+  display:block;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+}
+.box-message {
+  padding: 5px 8px;
+  /* overflow: hidden; */
+}
+.reply {
+  float: right;
+}
+
+.reply-in-reply {
+  padding: 4px 30px;
+}
+.reply-in-reply .date {
+  margin-left: 30px;
+}
+.reply-in-message {
+  padding-left: 20px;
+}
+.reply-in-reply-box {
+  margin-bottom: 0.8em;
+}
+.reply-in-reply-box p {
+  line-height: 24px;
 }
