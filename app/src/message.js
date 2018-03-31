@@ -6,8 +6,7 @@ import { connect } from 'react-redux';
 import formate from './utils/dateFormate';
 import './css/message.css';
 
-const COUNT = 2
-const page = 2
+const COUNT = 3
 
 const replytest = [
   {
@@ -78,14 +77,14 @@ class Test extends React.Component {
   }
 
   render() {
-    const { replys=[] } = this.props;
-    const replyIns = replys.map((rep, index) => (
+    const { replies=[] } = this.props;
+    const replyIns = replies.map((rep, index) => (
       <div className="reply-in-reply-box" key={index}>
         <p>邮箱：<span>{rep.email}</span><span className="date">{rep.date}</span></p>
         <p className="reply-in-message">{rep.reply}</p>
       </div>
     ));
-    const rows = replys.length > 0 ? replys.length : 1;
+    const rows = replies.length > 0 ? replies.length : 1;
     // https://s.gravatar.com/avatar/90d88b8fe862194845c1cb01dc1ebb60?s=80
     // gravatar avatar
     return (
@@ -121,11 +120,14 @@ class Test extends React.Component {
 
 
 class Message extends React.Component {
+  state = {
+    reset: false,
+    rows: this.props.doc.replies.length
+  };
 
   toggle() {
     const payload = {
-      replying: !this.props.replying,
-      clearReply: false
+      replying: !this.props.replying
     };
     this.props.dispatch({
       payload,
@@ -134,31 +136,32 @@ class Message extends React.Component {
     });
   }
 
-  onReply(data) {
-    const payload = {
-      replying: this.props.replying
-    };
-    this.props.dispatch({
-      payload,
-      type: "REPLY",
-      index: this.props.index,
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
+  onSubmit(data) {
+    if (this.state.reset) {
+      this.setState({ reset: false });
+    } else {
+      const { _id } = this.props.doc;
+      console.log(data);
+      db.get(_id)
+        .then(doc => {
+          doc.replies
+        });
+      this.setState({ reset: true });
+    }
   }
 
   render() {
+    // console.log(this.props.doc)
     const { replying } = this.props;
-    const { email, message, replys, time } = this.props.doc;
+    const { email, message, replies, time } = this.props.doc;
 
-    const replyIns = replys.map((rep, index) => (
+    const replyIns = replies.map((rep, index) => (
       <div className="reply-in-reply-box" key={index}>
         <p>邮箱：<span>{rep.email}</span><span className="date">{rep.date}</span></p>
         <p className="reply-in-message">{rep.reply}</p>
       </div>
     ));
-    const rows = replys.length > 0 ? replys.length : 1;
+    const rows = replies.length > 0 ? replies.length : 1;
 
     return (
       <div className="box">
@@ -181,7 +184,11 @@ class Message extends React.Component {
         <div className="reply-box">
           {
             replying
-            ? <Sender type="回复" onSubmit={this.onReply}/>
+            ? <Sender 
+                type="回复"
+                reset = {this.state.reset}
+                onSubmit={this.onSubmit.bind(this)}
+              />
             : null
           }
         </div>
@@ -207,34 +214,59 @@ class Messages extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: []
+      messages: [],
+      rows: 1,
+      page: 1
     };
+    this.getMessages = this.getMessages.bind(this);
+    this.changePage = this.changePage.bind(this);
   }
 
-  componentDidMount() {
+  getMessages() {
+    const { page } = this.state;
     db.allDocs({
       include_docs: true,
       limit: COUNT * page,
       skip: COUNT * (page - 1)
-    })
-      .then(docs => {
-        console.log(docs.rows);
-        this.setState({ messages: docs.rows });
-      })
-      .catch(err => console.log(err))
+    }).then(docs => {
+      console.log(docs.rows)
+      this.setState({
+        messages: docs.rows,
+        rows: docs.total_rows
+      });
+    }).catch(err => console.log(err));
+  }
+
+  changePage(page) {
+    // 关闭所有的回复
+    this.props.dispatch({ type: "REPLY" });
+    this.setState(
+      { page: page },
+      this.getMessages
+    );
+  }
+
+  componentDidMount() {
+    this.getMessages();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.shouldGetMessae) {
+      this.getMessages();
+      this.props.dispatch({
+        type: "HAS_NO_MESSAGE"
+      });
+    }
   }
 
   render() {
     const messages = this.state.messages.map((message, index) => {
-      // 连接被复用组件
-      const ConnectedMessage = connect((state) => ({
-        ...state.messageList[index]
-      }))(Message);
-
       return (
-        <ConnectedMessage 
+        <Message 
           doc={message.doc}
           index={index}
+          dispatch={this.props.dispatch}
+          {...this.props.options[index]}
           key={index}
         />
       );
@@ -242,15 +274,28 @@ class Messages extends React.Component {
 
     return (
       <div id="messages" className="container">
-        <Test replys={replytest} />
+        <Test replies={replytest} />
         <Test />
         {messages}
         <div className="pagination">
-          <Pagination defaultCurrent={1} hideOnSinglePage={true} total={32} />
+          <Pagination 
+            defaultCurrent={1}
+            current={this.state.page}
+            pageSize={COUNT}
+            hideOnSinglePage={true}
+            onChange={this.changePage}
+            total={this.state.rows} 
+          />
         </div>
       </div>
     );
   }
 }
 
-export default Messages;
+const macStateToProps = (state) => ({
+  page: state.pagination.page,
+  options: state.messageList,
+  shouldGetMessae: state.messages.getNewMessae
+});
+
+export default connect(macStateToProps)(Messages);

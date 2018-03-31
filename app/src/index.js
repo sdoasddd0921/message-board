@@ -4,7 +4,7 @@ import Message from './message';
 import Sender from './sender';
 import db from './db';
 import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import reducer from './redux/reducers';
 import './css/index.css';
 
@@ -19,11 +19,15 @@ class App extends React.Component {
 
   onSubmit(data) {
     if (!this.state.reset) {
-      db.put({...data, replys: []})
+      db.put({...data, replies: []})
       .then(data => {
         if (data.ok) {
           // 插入成功
+          console.log(data);
           this.setState({ reset: true });
+          this.props.dispatch({
+            type: "HAS_NEW_MESSAGE"
+          });
         } else {
           // 插入失败
           alert('留言失败，请刷新页面后重试。');
@@ -45,9 +49,11 @@ class App extends React.Component {
   }
 }
 
+const Root = connect()(App);
+
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Root />
   </Provider>,
   document.getElementById('root')
 );

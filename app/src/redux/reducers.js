@@ -1,15 +1,15 @@
 import { combineReducers } from 'redux';
 
 const messageDefaultState = {
-  clearMessage: false
+  getNewMessae: false
 }
 
 const messages = (state=messageDefaultState, actions) => {
   switch (actions.type) {
-    case "CLEAR_MESSAGE":
-      return {...state, clearMessage: true};
-    case "MESSAGE_CLEARED":
-      return {...state, clearMessage: false};
+    case "HAS_NEW_MESSAGE":
+      return {...state, getNewMessae: true};
+    case "HAS_NO_MESSAGE":
+      return {...state, getNewMessae: false};
     default:
       return state;
   }
@@ -17,21 +17,20 @@ const messages = (state=messageDefaultState, actions) => {
 
 // 一页10条留言
 const replyOption = {
-  replying: false,
-  clearReply: false
+  replying: false
 };
 const messageListState = new Array(10).fill(replyOption);
 
 const messageList = (state=messageListState, actions) => {
   if (actions.type === "REPLY") {
     if (actions.index === undefined) {
-      return state;
+      return messageListState;
     }
     const newReplyOption = [...messageListState];
     newReplyOption.splice(actions.index, 1, actions.payload);
     return newReplyOption;
   } else {
-    return state;
+    return messageListState;
   }
 }
 
