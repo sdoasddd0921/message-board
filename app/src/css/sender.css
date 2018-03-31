@@ -2,9 +2,7 @@
   min-width: 466px;
   width: 560px;
 }
-#message {
-  margin-bottom: 20px;
-}
+
 #email {
   display: inline-block;
   width: 300px;
@@ -18,8 +16,11 @@ form p {
   justify-content: center;
   align-items: center;
 }
-textarea {
-  resize: none;
+#message {
+  resize: none !important;
+  margin-bottom: 20px;
+  
+
 }
 label {
   margin-bottom: 0;

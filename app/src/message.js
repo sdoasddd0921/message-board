@@ -1,7 +1,13 @@
 import React from 'react';
 import Sender from './sender';
-import './css/message.css';
 import { Button, Pagination } from 'antd';
+import db from './db';
+import { connect } from 'react-redux';
+import formate from './utils/dateFormate';
+import './css/message.css';
+
+const COUNT = 2
+const page = 2
 
 const replytest = [
   {
@@ -72,14 +78,14 @@ class Test extends React.Component {
   }
 
   render() {
-    const { replyIn=[] } = this.props;
-    const replyIns = replyIn.map((rep, index) => (
+    const { replys=[] } = this.props;
+    const replyIns = replys.map((rep, index) => (
       <div className="reply-in-reply-box" key={index}>
         <p>邮箱：<span>{rep.email}</span><span className="date">{rep.date}</span></p>
         <p className="reply-in-message">{rep.reply}</p>
       </div>
     ));
-    const rows = replyIn.length > 0 ? replyIn.length : 1;
+    const rows = replys.length > 0 ? replys.length : 1;
     // https://s.gravatar.com/avatar/90d88b8fe862194845c1cb01dc1ebb60?s=80
     // gravatar avatar
     return (
@@ -109,12 +115,139 @@ class Test extends React.Component {
   }
 }
 
-class Messages extends React.Component {
+
+
+
+
+
+class Message extends React.Component {
+
+  toggle() {
+    const payload = {
+      replying: !this.props.replying,
+      clearReply: false
+    };
+    this.props.dispatch({
+      payload,
+      type: "REPLY",
+      index: this.props.index,
+    });
+  }
+
+  onReply(data) {
+    const payload = {
+      replying: this.props.replying
+    };
+    this.props.dispatch({
+      payload,
+      type: "REPLY",
+      index: this.props.index,
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+  }
+
   render() {
+    const { replying } = this.props;
+    const { email, message, replys, time } = this.props.doc;
+
+    const replyIns = replys.map((rep, index) => (
+      <div className="reply-in-reply-box" key={index}>
+        <p>邮箱：<span>{rep.email}</span><span className="date">{rep.date}</span></p>
+        <p className="reply-in-message">{rep.reply}</p>
+      </div>
+    ));
+    const rows = replys.length > 0 ? replys.length : 1;
+
+    return (
+      <div className="box">
+        <div className="box-title">
+          <div className="avatar"></div>
+          <div className="info">
+            <p className="email-big">{email}</p>
+            <p className="date-big">{formate(time)}</p>
+          </div>
+        </div>
+        <div className="box-message">
+          <p>{message}</p>
+          <Button 
+            className="reply" 
+            type="secondary" 
+            size="small" 
+            onClick={this.toggle.bind(this)}
+          >{replying ? '收起' : '回复'}</Button>
+        </div>
+        <div className="reply-box">
+          {
+            replying
+            ? <Sender type="回复" onSubmit={this.onReply}/>
+            : null
+          }
+        </div>
+        <div className="reply-in-reply">
+          {replyIns}
+        </div>
+        <div className="pagination">
+          {/* 内部的翻页条 */}
+          <Pagination 
+            defaultCurrent={1} 
+            total={rows} 
+            defaultPageSize={5} 
+            hideOnSinglePage={true} 
+            size="small" 
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+class Messages extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: []
+    };
+  }
+
+  componentDidMount() {
+    db.allDocs({
+      include_docs: true,
+      limit: COUNT * page,
+      skip: COUNT * (page - 1)
+    })
+      .then(docs => {
+        console.log(docs.rows);
+        this.setState({ messages: docs.rows });
+      })
+      .catch(err => console.log(err))
+  }
+
+  render() {
+    const messages = this.state.messages.map((message, index) => {
+      // 连接被复用组件
+      const ConnectedMessage = connect((state) => ({
+        ...state.messageList[index]
+      }))(Message);
+
+      return (
+        <ConnectedMessage 
+          doc={message.doc}
+          index={index}
+          key={index}
+        />
+      );
+    });
+
     return (
       <div id="messages" className="container">
-        <Test replyIn={replytest} />
+        <Test replys={replytest} />
         <Test />
+        {messages}
+        <div className="pagination">
+          <Pagination defaultCurrent={1} hideOnSinglePage={true} total={32} />
+        </div>
       </div>
     );
   }
