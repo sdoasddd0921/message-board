@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
-import './css/sender.css';
+
+import '../css/sender.css';
 
 class Sender extends React.Component {
   constructor(props) {

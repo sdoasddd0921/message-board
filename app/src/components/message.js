@@ -1,11 +1,13 @@
-import React from 'react';
-import Sender from './sender';
-import { Button, Pagination } from 'antd';
-import db from './db';
-import { connect } from 'react-redux';
-import formate from './utils/dateFormate';
 import md5 from 'md5';
-import './css/message.css';
+import React from 'react';
+import { connect } from 'react-redux';
+import { Button, Pagination } from 'antd';
+
+import db from './db';
+import Sender from './sender';
+import formate from '../utils/dateFormate';
+
+import '../css/message.css';
 
 // 每页留言条数和回复数量
 const COUNT = 10;
@@ -50,7 +52,6 @@ class Message extends React.Component {
       this.setState({ reset: false });
     } else {
       const { _id } = this.props.doc;
-      console.log(data);
       db.get(_id)
         .then(doc => {
           doc.replies.push(data);
