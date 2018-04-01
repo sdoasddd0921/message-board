@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Button } from 'antd';
+import { Button } from 'antd';
 import './css/sender.css';
 
 class Sender extends React.Component {
@@ -11,13 +11,23 @@ class Sender extends React.Component {
     e.preventDefault();
     const timeStamp = String(Number(new Date()))
     if (typeof this.props.onSubmit === 'function') {
-      const data = {
-        email: this.email.value,
-        message: this.message.value,
-        time: timeStamp,
-        _id: timeStamp
+      let data;
+      if (this.props.type === '回复') {
+        data = {
+          email: this.email.value,
+          reply: this.message.value,
+          time: timeStamp,
+          _id: timeStamp
+        }
+      } else {
+        data = {
+          email: this.email.value,
+          message: this.message.value,
+          time: timeStamp,
+          _id: timeStamp
+        }
       }
-      if (data.email && data.message) {
+      if (data.email && (data.message || data.reply)) {
         this.props.onSubmit(data);
       } else {
         alert('请检查您的邮箱或留言。');

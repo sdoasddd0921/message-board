@@ -4,6 +4,7 @@ const messageDefaultState = {
   getNewMessae: false
 }
 
+// 每次发送留言后刷新列表
 const messages = (state=messageDefaultState, actions) => {
   switch (actions.type) {
     case "HAS_NEW_MESSAGE":

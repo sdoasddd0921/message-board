@@ -6,7 +6,9 @@ import { connect } from 'react-redux';
 import formate from './utils/dateFormate';
 import './css/message.css';
 
-const COUNT = 3
+// 每页留言条数和回复数量
+const COUNT = 3;
+const REPLIES = 2;
 
 const replytest = [
   {
@@ -98,10 +100,21 @@ class Test extends React.Component {
         </div>
         <div className="box-message">
           <p>这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试这是一条留言测试</p>
-          <Button className="reply" type="secondary" size="small" onClick={this.toggleHandler.bind(this,'reply')}>{this.state.reply?'收起':'回复'}</Button>
+          <Button 
+            className="reply" 
+            type="secondary" 
+            size="small" 
+            onClick={this.toggleHandler.bind(this,'reply')}
+          >
+            {this.state.reply?'收起':'回复'}
+          </Button>
         </div>
         <div className="reply-box">
-          {this.state.reply?<Sender type="回复" />:null}
+          {
+            this.state.reply
+            ? <Sender type="回复" />
+            : null
+          }
         </div>
         <div className="reply-in-reply">
           {replyIns}
@@ -113,11 +126,6 @@ class Test extends React.Component {
     );
   }
 }
-
-
-
-
-
 
 class Message extends React.Component {
   state = {
@@ -144,14 +152,17 @@ class Message extends React.Component {
       console.log(data);
       db.get(_id)
         .then(doc => {
-          doc.replies
-        });
+          doc.replies.push(data);
+          console.log(doc.replies)
+          return db.put(doc);
+        })
+        .then(doc => console.log(doc))
+        .catch(err => console.log('update error:', err));
       this.setState({ reset: true });
     }
   }
 
   render() {
-    // console.log(this.props.doc)
     const { replying } = this.props;
     const { email, message, replies, time } = this.props.doc;
 
@@ -275,7 +286,6 @@ class Messages extends React.Component {
     return (
       <div id="messages" className="container">
         <Test replies={replytest} />
-        <Test />
         {messages}
         <div className="pagination">
           <Pagination 
