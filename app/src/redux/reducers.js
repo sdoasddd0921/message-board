@@ -23,15 +23,16 @@ const replyOption = {
 const messageListState = new Array(10).fill(replyOption);
 
 const messageList = (state=messageListState, actions) => {
-  if (actions.type === "REPLY") {
-    if (actions.index === undefined) {
-      return messageListState;
-    }
-    const newReplyOption = [...messageListState];
-    newReplyOption.splice(actions.index, 1, actions.payload);
-    return newReplyOption;
-  } else {
-    return messageListState;
+  switch (actions.type) {
+    case "REPLY":
+      if (actions.index === undefined) {
+        return messageListState;
+      }
+      const newReplyOption = [...messageListState];
+      newReplyOption.splice(actions.index, 1, actions.payload);
+      return newReplyOption;
+    default:
+      return state;
   }
 }
 

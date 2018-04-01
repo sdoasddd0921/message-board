@@ -1,12 +1,21 @@
 const formate = (date) => {
   date = new Date(Number(date));
-  const y = date.getFullYear();
-  const M = date.getMonth() + 1;
-  const d = date.getDate();
-  const h = date.getHours();
-  const m = date.getMinutes();
-  const s = date.getSeconds();
-  return `${y}-${M}-${d} ${h}:${m}:${s}`;
+  const D = {
+    y: date.getFullYear(),
+    M: date.getMonth() + 1,
+    d: date.getDate(),
+    h: date.getHours(),
+    m: date.getMinutes(),
+    s: date.getSeconds()
+  };
+  for (let ele in D) {
+    if (D[ele] < 10) {
+      D[ele] = '0' + D[ele];
+    } else {
+      D[ele] = String(D[ele]);
+    }
+  }
+  return `${D.y}-${D.M}-${D.d} ${D.h}:${D.m}:${D.s}`;
 };
 
 export default formate;

@@ -1,19 +1,20 @@
 #messages {
   min-width: 466px;
   width: 680px;
-  margin-bottom: 50px;
+  margin-bottom: 0px;
 }
 
 .box {
-  background: #eee;
+  background: rgb(241, 232, 241);
   margin-bottom: 60px;
-  border-bottom-color: #ccc;
+  border-bottom-color: lightblue;
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
 .box p {
   margin-bottom: 0;
   line-height: 32px;
+  word-break: break-word;
 }
 
 .avatar {
@@ -21,8 +22,12 @@
   width: 64px;
   height: 64px;
   margin-right: 10px;
-  background: pink;
 }
+.avatar-img {
+  height: 64px;
+  width: 64px;
+}
+
 .box-title::after, .box-message::after{
   content: "";
   display:block;
@@ -41,8 +46,9 @@
 .reply-in-reply {
   padding: 4px 30px;
 }
-.reply-in-reply .date {
+.reply-in-reply .reply-date {
   margin-left: 30px;
+  float: right;
 }
 .reply-in-message {
   padding-left: 20px;
