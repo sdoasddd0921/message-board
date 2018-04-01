@@ -6,8 +6,6 @@ import db from './db';
 import Sender from './sender';
 import reducer from '../redux/reducers';
 
-import '../css/board.css';
-
 const store = createStore(reducer);
 
 class Board extends React.Component {
