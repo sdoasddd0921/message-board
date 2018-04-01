@@ -5,9 +5,9 @@
 }
 
 .box {
-  background: rgb(241, 232, 241);
+  background: lightblue;
   margin-bottom: 60px;
-  border-bottom-color: lightblue;
+  border-bottom-color: lightcyan;
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
@@ -28,6 +28,9 @@
   width: 64px;
 }
 
+.box-title {
+  background: lightcyan;
+}
 .box-title::after, .box-message::after{
   content: "";
   display:block;
